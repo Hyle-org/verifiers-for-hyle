@@ -43,16 +43,19 @@ fn perform_verification(
         panic!("Next state mismatch");
     }
 
-    let mut decoded_image_id: [u32; 8] = [0; 8];
-    for i in 0..8 {
-        decoded_image_id[i] = u32::from_str_radix(
+    let mut decoded_image_id: [u8; 32] = [0; 32];
+    for i in 0..image_id.len() / 2 {
+        decoded_image_id[i] = u8::from_str_radix(
             &image_id
-                .get(8 * i..8 * i + 8)
+                .get(i*2..i*2 + 2)
                 .expect("Invalid method ID string"),
             16,
         )
         .expect("Invalid method ID string")
     }
+    // Rotate to pad 0s in front.
+    decoded_image_id.rotate_right((64 - image_id.len()) / 2);
+
     receipt
         .verify(decoded_image_id)
         .expect("Verification failed");
