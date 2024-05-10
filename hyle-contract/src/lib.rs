@@ -1,4 +1,8 @@
+#![no_std]
+extern crate alloc;
+
 use serde::{Deserialize, Serialize};
+use alloc::vec::Vec;
 
 #[derive(Serialize, Deserialize, Debug)]
 

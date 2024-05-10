@@ -3,7 +3,7 @@ use std::env;
 
 use base64::prelude::*;
 
-use hyle_verifier::HyleOutput;
+use hyle_contract::HyleOutput;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
