@@ -652,9 +652,17 @@ name = "hyle-verifier"
 version = "0.1.0"
 dependencies = [
  "base64 0.22.1",
+ "hyle_contract",
  "risc0-zkvm",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "hyle_contract"
+version = "0.1.0"
+dependencies = [
+ "serde",
 ]
 
 [[package]]
