@@ -1,5 +1,5 @@
 [package]
-name = "hyle-sp1-verifier"
+name = "sp1-verifier"
 version = "0.1.0"
 edition = "2021"
 
