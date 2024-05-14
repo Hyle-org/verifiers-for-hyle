@@ -2,5 +2,6 @@
 resolver = "2"
 members = [
     "hyle-contract",
-    "hyle-verifier",
+    "hyle-risc0-verifier",
+    "hyle-sp1-verifier",
 ]
