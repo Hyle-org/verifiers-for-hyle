@@ -14,7 +14,7 @@ fn main() {
         std::process::exit(1);
     }
     
-    let elf: Vec<u8> = fs::read(&args[1]).expect("loading elf failed");
+    let elf: Vec<u8> = BASE64_STANDARD.decode(fs::read(&args[1]).expect("loading elf failed")).expect("ELF decoding failed");
     
     let initial_state = BASE64_STANDARD.decode(&args[3]).expect("Invalid initial state string");
     let next_state = BASE64_STANDARD.decode(&args[4]).expect("Invalid next state string");
