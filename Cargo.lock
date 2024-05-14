@@ -2175,26 +2175,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "df3b46402a9d5adb4c86a0cf463f42e19994e3ee891101b1841f30a545cb49a9"
 
 [[package]]
-name = "hyle-risc0-verifier"
-version = "0.1.0"
-dependencies = [
- "base64 0.22.1",
- "hyle_contract",
- "risc0-zkvm",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "hyle-sp1-verifier"
-version = "0.1.0"
-dependencies = [
- "base64 0.22.1",
- "hyle_contract",
- "sp1-sdk",
-]
-
-[[package]]
 name = "hyle_contract"
 version = "0.1.0"
 dependencies = [
@@ -3918,6 +3898,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "risc0-verifier"
+version = "0.1.0"
+dependencies = [
+ "base64 0.22.1",
+ "hyle_contract",
+ "risc0-zkvm",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "risc0-zkp"
 version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4779,6 +4770,15 @@ dependencies = [
  "tracing",
  "twirp",
  "vergen",
+]
+
+[[package]]
+name = "sp1-verifier"
+version = "0.1.0"
+dependencies = [
+ "base64 0.22.1",
+ "hyle_contract",
+ "sp1-sdk",
 ]
 
 [[package]]
