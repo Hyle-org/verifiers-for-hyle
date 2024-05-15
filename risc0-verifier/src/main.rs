@@ -29,7 +29,7 @@ fn main() {
         let initial_state = BASE64_STANDARD.decode(&args[3]).expect("Invalid initial state string");
         let next_state = BASE64_STANDARD.decode(&args[4]).expect("Invalid next state string");
 
-        let output: HyleOutput = receipt.journal.decode().expect("Failed to decode receipt journal");
+        let output: HyleOutput<()> = receipt.journal.decode().expect("Failed to decode receipt journal");
         if output.initial_state != initial_state {
             panic!("Initial state mismatch");
         }
