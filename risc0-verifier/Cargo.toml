@@ -1,5 +1,5 @@
 [package]
-name = "hyle-verifier"
+name = "risc0-verifier"
 version = "0.1.0"
 edition = "2021"
 

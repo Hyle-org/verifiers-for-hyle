@@ -1,0 +1,9 @@
+[package]
+name = "sp1-verifier"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sp1-sdk = { git = "https://github.com/succinctlabs/sp1.git", rev = "v1.0.0-testnet" }
+base64 = "0.22.1"
+hyle_contract = { path = "../hyle-contract" }
