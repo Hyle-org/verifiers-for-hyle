@@ -27,10 +27,7 @@ fn main() {
         let initial_state = BASE64_STANDARD.decode(&args[3]).expect("Invalid initial state string");
         let next_state = BASE64_STANDARD.decode(&args[4]).expect("Invalid next state string");
 
-        let output: HyleOutput = HyleOutput{
-            initial_state: proof.public_values.read::<Vec<u8>>(),
-            next_state: proof.public_values.read::<Vec<u8>>()
-        };
+        let output: HyleOutput<()> = proof.public_values.read::<HyleOutput<()>>();
 
         if output.initial_state != initial_state.to_vec() {
             panic!("Initial state mismatch");
