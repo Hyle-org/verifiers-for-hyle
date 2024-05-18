@@ -3,25 +3,28 @@
 extern crate alloc;
 
 use serde::{Deserialize, Serialize};
-use alloc::vec::Vec;
+use alloc::{vec::Vec, string::String};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct HyleInput<T> {
-    pub block_number: u32,
-    pub block_time: u32,
-    pub caller: Vec<u8>,
+    pub initial_state: Vec<u8>,
+    pub sender: String,
+    pub caller: String,
+    pub block_number: u64,
+    pub block_time: u64,
     pub tx_hash: Vec<u8>,
-    pub initial_state: u32,
-    pub program_inputs: Option<T>
+    pub program_inputs: T
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct HyleOutput<T> {
-    pub block_number: u32,
-    pub block_time: u32,
-    pub caller: Vec<u8>,
-    pub tx_hash: Vec<u8>,
+    pub version: u32,
     pub initial_state: Vec<u8>,
     pub next_state: Vec<u8>,
-    pub program_outputs: Option<T>
+    pub sender: String,
+    pub caller: String,
+    pub block_number: u64,
+    pub block_time: u64,
+    pub tx_hash: Vec<u8>,
+    pub program_outputs: T
 }
