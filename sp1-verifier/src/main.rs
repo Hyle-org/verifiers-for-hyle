@@ -1,46 +1,31 @@
 use std::env;
-use std::fs;
 
 use base64::prelude::*;
 
-use sp1_sdk::{ProverClient, SP1Proof};
+use sp1_sdk::{ProverClient, SP1Proof, SP1VerifyingKey};
 
 use hyle_contract::HyleOutput;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    match args.len() {
-        3 | 5 => {}
-        _ => {
-            eprintln!("Usage: {} <image_id> <receipt_path> <initial_state> <next_state>", args[0]);
-            eprintln!("Usage for stateless verifiation: {} <image_id> <receipt_path>", args[0]);
-            std::process::exit(1);
-        }
+    if args.len() != 3 {
+        eprintln!("Usage: {} <b64_encoded_verification_key> <receipt_path>", args[0]);
+        std::process::exit(1);
     }
-    
-    let elf: Vec<u8> = BASE64_STANDARD.decode(fs::read(&args[1]).expect("loading elf failed")).expect("ELF decoding failed");
 
+    let vk_json = String::from_utf8(BASE64_STANDARD.decode(&args[1]).expect("vk decoding failed")).expect("Fail to cast vk to json string");
+
+    let vk: SP1VerifyingKey = SP1VerifyingKey{
+        vk: serde_json::from_str(&vk_json).unwrap()
+    };
     let mut proof = SP1Proof::load(&args[2]).expect("loading proof failed");
 
-    if args.len() == 5 {
-        // Stored as raw base64 values.
-        let initial_state = BASE64_STANDARD.decode(&args[3]).expect("Invalid initial state string");
-        let next_state = BASE64_STANDARD.decode(&args[4]).expect("Invalid next state string");
-
-        let output: HyleOutput<()> = proof.public_values.read::<HyleOutput<()>>();
-
-        if output.initial_state != initial_state.to_vec() {
-            panic!("Initial state mismatch");
-        }
-
-        if output.next_state != next_state.to_vec() {
-            panic!("Next state mismatch");
-        }
-    }
-
-    // TODO: check that elf is correct ?
+    // TODO: check that vk is correct ?
     let prover_client = ProverClient::new();
-    let (_pk, vk) = prover_client.setup(&elf);
-    
     prover_client.verify(&proof, &vk).expect("verification failed");
+
+    // Outputs to stdout for the caller to read.
+    let output: HyleOutput<()> = proof.public_values.read::<HyleOutput<()>>();
+    println!("{}", serde_json::to_string(&output).expect("Failed to serialize output"));
+
 }
