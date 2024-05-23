@@ -4800,9 +4800,11 @@ name = "sp1-verifier"
 version = "0.1.0"
 dependencies = [
  "base64 0.22.1",
+ "bincode",
  "hyle_contract",
  "serde_json",
  "sp1-core",
+ "sp1-prover",
  "sp1-sdk",
 ]
 
