@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-NAME="hyle-risc-zero-verifier"
+NAME="verifiers-for-hyle"
 # TAG=${TAG:=$(git rev-parse --short HEAD)}
 TAG="latest"
 echo "Building docker image, tagging $TAG"

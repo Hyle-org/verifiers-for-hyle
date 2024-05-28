@@ -19,3 +19,4 @@ FROM alpine:latest
 WORKDIR /
 COPY --from=builder /app/target/x86_64-unknown-linux-gnu/release/risc0-verifier risc0-verifier
 COPY --from=builder /app/target/x86_64-unknown-linux-gnu/release/sp1-verifier sp1-verifier
+COPY noir-verifier /noir-verifier
