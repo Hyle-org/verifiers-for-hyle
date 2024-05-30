@@ -1,4 +1,4 @@
-use miden_verifier::{verify, ExecutionProof, ProgramInfo, StackInputs, StackOutputs, Kernel, Digest};
+use miden_verifier::{verify, ProgramInfo, Kernel};
 use std::env;
 use std::path::PathBuf;
 use std::path::Path;
@@ -7,14 +7,13 @@ use crate::helpers::ProgramHash;
 use crate::helpers::InputFile;
 use crate::helpers::OutputFile;
 use crate::helpers::ProofFile;
-use hyle_contract::HyleOutput;
 mod helpers;
 
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() != 4 {
-        eprintln!("Usage: {} <program_hash> <proof_path> <input_file> <output_file>", args[0]);
+        eprintln!("Usage: {} <program_hash> <proof_path> <stack_inputs> <stack_outputs>", args[0]);
         std::process::exit(1);
     }
 
@@ -48,7 +47,7 @@ fn main() {
     let proof = ProofFile::read(&Some(proof_path.to_path_buf()), proof_path).unwrap();
 
     // This is copied from core midenvm verifier.
-    // TODO accept kernel as CLI argument
+    // TODO accept kernel as CLI argument -- this is not done in core midenVM
     let kernel = Kernel::default();
     let program_info = ProgramInfo::new(program_hash, kernel);
     

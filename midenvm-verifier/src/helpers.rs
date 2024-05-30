@@ -14,7 +14,6 @@ use std::{
     path::{Path, PathBuf},
 };
 use miden_stdlib::StdLibrary;
-// use stdlib::StdLibrary;
 pub use tracing::{event, instrument, Level};
 
 // CONSTANTS
