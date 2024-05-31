@@ -5,7 +5,6 @@ edition = "2021"
 
 [dependencies]
 hex = "0.4.3"
-miden = "0.3.0"
 miden-assembly = "0.9.2"
 miden-stdlib = "0.9.2"
 miden-verifier = "0.9.1"

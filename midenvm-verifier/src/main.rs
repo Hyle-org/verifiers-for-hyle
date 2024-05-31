@@ -17,33 +17,24 @@ fn main() {
         std::process::exit(1);
     }
 
-    // read program hash from input
+    // Read program hash from input.
     let program_hash = ProgramHash::read(&args[1]).unwrap();
-
-
-    // load input data from file
+    // Make required types for reading files.
     let mut input_path = PathBuf::new();
-
-    input_path.push(args[3].clone());
-
+    input_path.push(args[3].clone()); 
+    let mut output_path = PathBuf::new();
+    output_path.push(args[4].clone());
     let proof_path = Path::new(&args[2]);
 
+    // Load files.
     let input_data = InputFile::read(&Some(input_path), proof_path).unwrap();
-    
-    // fetch the stack inputs from the arguments
-    let stack_inputs = input_data.parse_stack_inputs().unwrap();
-    
-    // load outputs data from file
-
-    let mut output_path = PathBuf::new();
-
-    output_path.push(args[4].clone());
-
     let outputs_data = OutputFile::read(&Some(output_path), proof_path).unwrap();
     
+    // Fetch the stack inputs and outputs from the arguments
+    let stack_inputs = input_data.parse_stack_inputs().unwrap();
     let stack_outputs = outputs_data.stack_outputs().unwrap();
 
-    // load proof from file
+    // Load the proof from file.
     let proof = ProofFile::read(&Some(proof_path.to_path_buf()), proof_path).unwrap();
 
     // This is copied from core midenvm verifier.
@@ -60,4 +51,3 @@ fn main() {
     // let output: HyleOutput<()> = result ????
 
 }
-
