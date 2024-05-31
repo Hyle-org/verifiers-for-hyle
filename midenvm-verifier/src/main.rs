@@ -12,21 +12,21 @@ mod helpers;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    if args.len() != 4 {
+    if args.len() != 5 {
         eprintln!("Usage: {} <program_hash> <proof_path> <stack_inputs> <stack_outputs>", args[0]);
         std::process::exit(1);
     }
 
     // read program hash from input
-    let program_hash = ProgramHash::read(&args[0]).unwrap();
+    let program_hash = ProgramHash::read(&args[1]).unwrap();
 
 
     // load input data from file
     let mut input_path = PathBuf::new();
 
-    input_path.push(args[2].clone());
+    input_path.push(args[3].clone());
 
-    let proof_path = Path::new(&args[1]);
+    let proof_path = Path::new(&args[2]);
 
     let input_data = InputFile::read(&Some(input_path), proof_path).unwrap();
     
@@ -37,7 +37,7 @@ fn main() {
 
     let mut output_path = PathBuf::new();
 
-    output_path.push(args[3].clone());
+    output_path.push(args[4].clone());
 
     let outputs_data = OutputFile::read(&Some(output_path), proof_path).unwrap();
     
@@ -55,6 +55,7 @@ fn main() {
     let result = verify(program_info, stack_inputs, stack_outputs, proof)
         .map_err(|err| format!("Program failed verification! - {}", err));
 
+    eprintln!("result: {:?}", result);
     // TODO: what to put here?
     // let output: HyleOutput<()> = result ????
 
