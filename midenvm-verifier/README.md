@@ -4,6 +4,11 @@ In order to verify midenVM proofs you'd need program_hash, proof_file path, stac
 
 In order to get these files you'd need to install miden-vm and generate them based on your program.masm file.
 
-Check https://0xpolygonmiden.github.io/miden-vm/intro/usage.html#running-miden-vm for instructions.
+Check https://0xpolygonmiden.github.io/miden-vm/intro/usage.html#running-miden-vm for detailed instructions.
+
+Once you have your program.masm file run:
+```
+./target/optimized/miden prove /path-to-your-program/program.masm
+```
 
 File helpers.rs is inspired/copied from core midenVM cli verifier implementation since those methods are not exposed by midenVM crate.
