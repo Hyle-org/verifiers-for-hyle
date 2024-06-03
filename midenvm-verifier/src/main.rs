@@ -1,13 +1,13 @@
+mod helpers;
+
 use miden_verifier::{verify, ProgramInfo, Kernel};
 use std::env;
 use std::path::PathBuf;
 use std::path::Path;
-// use miden::verify;
 use crate::helpers::ProgramHash;
 use crate::helpers::InputFile;
 use crate::helpers::OutputFile;
 use crate::helpers::ProofFile;
-mod helpers;
 
 
 fn main() {
@@ -17,7 +17,7 @@ fn main() {
         std::process::exit(1);
     }
 
-    // Read program hash from input.
+    // Read program hash from the input.
     let program_hash = ProgramHash::read(&args[1]).unwrap();
     // Make required types for reading files.
     let mut input_path = PathBuf::new();
@@ -29,7 +29,7 @@ fn main() {
     // Load files.
     let input_data = InputFile::read(&Some(input_path), proof_path).unwrap();
     let outputs_data = OutputFile::read(&Some(output_path), proof_path).unwrap();
-    
+
     // Fetch the stack inputs and outputs from the arguments
     let stack_inputs = input_data.parse_stack_inputs().unwrap();
     let stack_outputs = outputs_data.stack_outputs().unwrap();
@@ -41,7 +41,7 @@ fn main() {
     // TODO accept kernel as CLI argument -- this is not done in core midenVM
     let kernel = Kernel::default();
     let program_info = ProgramInfo::new(program_hash, kernel);
-    
+
     // verify proof
     let result = verify(program_info, stack_inputs, stack_outputs, proof)
         .map_err(|err| format!("Program failed verification! - {}", err));
