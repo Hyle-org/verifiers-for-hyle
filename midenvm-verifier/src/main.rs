@@ -1,6 +1,7 @@
 mod helpers;
 
 use miden_verifier::{verify, ProgramInfo, Kernel};
+use miden_vm::utils::Serializable;
 use std::env;
 use std::path::PathBuf;
 use std::path::Path;
@@ -8,6 +9,7 @@ use crate::helpers::ProgramHash;
 use crate::helpers::InputFile;
 use crate::helpers::OutputFile;
 use crate::helpers::ProofFile;
+use hyle_contract::HyleOutput;
 
 
 fn main() {
@@ -47,7 +49,7 @@ fn main() {
         .map_err(|err| format!("Program failed verification! - {}", err));
 
     eprintln!("result: {:?}", result);
-    // TODO: what to put here?
-    // let output: HyleOutput<()> = result ????
+    // TODO: what to put for other fields?
+    // let output: HyleOutput<()> = HyleOutput { initial_state: stack_inputs.to_bytes(), next_state: stack_outputs.to_bytes(), origin: (), caller: (), block_number: (), block_time: (), tx_hash: (), program_outputs: () };
 
 }
