@@ -1,70 +1,74 @@
-# RISC Zero Rust Starter Template
+# Verifiers for Hylé
 
-Welcome to the RISC Zero Rust Starter Template! This template is intended to
-give you a starting point for building a project using the RISC Zero zkVM.
-Throughout the template (including in this README), you'll find comments
-labelled `TODO` in places where you'll need to make changes. To better
-understand the concepts behind this template, check out the [zkVM
-Overview][zkvm-overview].
+Welcome to the Verifiers for Hylé repository! This repository is dedicated to hosting all the different verifiers that Hylé supports. Each verifier is organized into its own folder, making it straightforward to add new verifiers and maintain existing ones.
+
+## Project Description
+
+The **Verifiers for Hylé** repository is a comprehensive collection of verifiers supported by Hylé. Verifiers play a crucial role in validating and verifying various operations within the Hylé ecosystem. This repository is structured to facilitate easy addition and maintenance of verifiers, ensuring a robust and scalable verification system.
+
+### Code Structure
+
+The repository adopts a modular approach, with each verifier housed in its own folder within the `verifiers` directory. This structure enhances clarity and ease of navigation, making it simple to manage and expand the repository. Below is an overview of the directory structure:
+
+```text
+verifiers-for-hyle
+├── Cargo.toml
+├── verifiers
+│   ├── verifier1
+│   │   ├── Cargo.toml
+│   │   └── src
+│   │       └── main.rs                    <-- [Verifier1 code goes here]
+│   ├── verifier2
+│   │   ├── Cargo.toml
+│   │   └── src
+│   │       └── main.rs                    <-- [Verifier2 code goes here]
+│   └── ...                                <-- [Additional verifiers]
+└── README.md
+```
+
+To add a new verifier, simply create a new folder within the `verifiers` directory and follow the structure of the existing verifiers.
 
 ## Quick Start
 
-First, make sure [rustup] is installed. The
-[`rust-toolchain.toml`][rust-toolchain] file will be used by `cargo` to
-automatically install the correct version.
+Before you begin, ensure that [rustup] is installed. The [`rust-toolchain.toml`][rust-toolchain] file will be used by `cargo` to automatically install the correct version.
 
-To build all methods and execute the method within the zkVM, run the following
-command:
+To build all methods and execute the method within the zkVM, use the following command:
 
 ```bash
 cargo run
 ```
 
-This is an empty template, and so there is no expected output (until you modify
-the code).
+Since this is an initial template, no output is expected until the code is modified.
 
-### Executing the project locally in development mode
+### Executing the Project Locally in Development Mode
 
-During development, faster iteration upon code changes can be achieved by leveraging [dev-mode], we strongly suggest activating it during your early development phase. Furthermore, you might want to get insights into the execution statistics of your project, and this can be achieved by specifying the environment variable `RUST_LOG="[executor]=info"` before running your project.
-
-Put together, the command to run your project in development mode while getting execution statistics is:
+For faster iterations during development, we recommend leveraging [dev-mode]. This mode accelerates the development process and provides execution statistics. To run your project in development mode with execution statistics, use the following command:
 
 ```bash
 RUST_LOG="[executor]=info" RISC0_DEV_MODE=1 cargo run
 ```
 
-### Running proofs remotely on Bonsai
+### Running Proofs Remotely on Bonsai
 
-_Note: The Bonsai proving service is still in early Alpha; an API key is
-required for access. [Click here to request access][bonsai access]._
+_Note: The Bonsai proving service is in early Alpha. An API key is required for access. [Click here to request access][bonsai access]._
 
-If you have access to the URL and API key to Bonsai you can run your proofs
-remotely. To prove in Bonsai mode, invoke `cargo run` with two additional
-environment variables:
+If you have access to the Bonsai URL and API key, you can run your proofs remotely. Use the following command, including the necessary environment variables:
 
 ```bash
 BONSAI_API_KEY="YOUR_API_KEY" BONSAI_API_URL="BONSAI_URL" cargo run
 ```
 
-## How to create a project based on this template
+## Creating a Project Based on This Template
 
-Search this template for the string `TODO`, and make the necessary changes to
-implement the required feature described by the `TODO` comment. Some of these
-changes will be complex, and so we have a number of instructional resources to
-assist you in learning how to write your own code for the RISC Zero zkVM:
+Search this template for the string `TODO`, and make the necessary changes to implement the required features described by the `TODO` comments. For more complex changes, we provide several instructional resources:
 
-- The [RISC Zero Developer Docs][dev-docs] is a great place to get started.
-- Example projects are available in the [examples folder][examples] of
-  [`risc0`][risc0-repo] repository.
-- Reference documentation is available at [https://docs.rs][docs.rs], including
-  [`risc0-zkvm`][risc0-zkvm], [`cargo-risczero`][cargo-risczero],
-  [`risc0-build`][risc0-build], and [others][crates].
+- The [RISC Zero Developer Docs][dev-docs] is a great place to start.
+- Example projects are available in the [examples folder][examples] of the [`risc0`][risc0-repo] repository.
+- Reference documentation is available on [https://docs.rs][docs.rs], including [`risc0-zkvm`][risc0-zkvm], [`cargo-risczero`][cargo-risczero], [`risc0-build`][risc0-build], and [other crates][crates].
 
 ## Directory Structure
 
-It is possible to organize the files for these components in various ways.
-However, in this starter template we use a standard directory structure for zkVM
-applications, which we think is a good starting point for your applications.
+The following standard directory structure is used for zkVM applications in this template:
 
 ```text
 project_name
@@ -87,12 +91,19 @@ project_name
 
 ## Video Tutorial
 
-For a walk-through of how to build with this template, check out this [excerpt
-from our workshop at ZK HACK III][zkhack-iii].
+For a step-by-step guide on building with this template, watch this [excerpt from our workshop at ZK HACK III][zkhack-iii].
+
+## Useful Links
+
+- [Hylé website](https://www.hyle.org)
+- [Hylé documentation](https://docs.hyle.org)
+- [RISC Zero Developer Docs][dev-docs]
+- Example projects in the [examples folder][examples] of the [`risc0`][risc0-repo] repository
+- Reference documentation on [https://docs.rs][docs.rs] including [`risc0-zkvm`][risc0-zkvm], [`cargo-risczero`][cargo-risczero], and [`risc0-build`][risc0-build]
 
 ## Questions, Feedback, and Collaborations
 
-We'd love to hear from you on [Discord][discord] or [Twitter][twitter].
+We welcome your feedback and collaboration! Connect with us on [Discord][discord] or [Twitter][twitter].
 
 [bonsai access]: https://bonsai.xyz/apply
 [cargo-risczero]: https://docs.rs/cargo-risczero
