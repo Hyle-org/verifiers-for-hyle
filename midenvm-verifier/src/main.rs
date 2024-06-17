@@ -1,3 +1,9 @@
+// TODO: some of the helpers.rs is currently only used in tests, ignore the warnings for now.
+#![allow(
+    dead_code,
+    unused_imports
+)]
+
 mod helpers;
 
 use miden_verifier::{verify, ProgramInfo, Kernel};
@@ -51,5 +57,4 @@ fn main() {
     eprintln!("result: {:?}", result);
     // TODO: what to put for other fields?
     // let output: HyleOutput<()> = HyleOutput { initial_state: stack_inputs.to_bytes(), next_state: stack_outputs.to_bytes(), origin: (), caller: (), block_number: (), block_time: (), tx_hash: (), program_outputs: () };
-
 }

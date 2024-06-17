@@ -1,7 +1,8 @@
 [workspace]
 resolver = "2"
 members = [
-    "hyle-contract", "midenvm-verifier",
+    "hyle-contract",
+    "midenvm-verifier",
     "risc0-verifier",
     "sp1-verifier",
 ]
