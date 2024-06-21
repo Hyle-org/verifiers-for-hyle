@@ -509,6 +509,7 @@ dependencies = [
  "serde",
  "serde_json",
  "stark-platinum-prover",
+ "wasm-bindgen",
 ]
 
 [[package]]
