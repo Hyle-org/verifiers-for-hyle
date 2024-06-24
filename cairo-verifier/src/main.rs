@@ -1,5 +1,4 @@
 use clap::Parser;
-use stark_platinum_prover::proof::options::{ProofOptions, SecurityLevel};
 use crate::utils::error::VerifierError;
 
 mod commands;
@@ -11,12 +10,11 @@ struct Cli {
 }
 
 fn main() -> Result<(), VerifierError> {
-    let proof_options = ProofOptions::new_secure(SecurityLevel::Conjecturable100Bits, 3);
     let args: commands::ProverArgs = commands::ProverArgs::parse();
 
     let res = match args.entity {
         commands::ProverEntity::Verify(args) => {   
-            utils::verify_proof(&args.proof_path, proof_options)
+            utils::verify_proof(&args.proof_path)
         },
         commands::ProverEntity::Prove(args) => {
             utils::prove(
@@ -24,7 +22,6 @@ fn main() -> Result<(), VerifierError> {
                 &args.memory_bin_path,
                 &args.output_path,
                 &args.proof_path,
-                &proof_options
             )
         }
     };

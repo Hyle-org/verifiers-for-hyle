@@ -1,6 +1,6 @@
 use cairo_platinum_prover::air::{generate_cairo_proof, verify_cairo_proof, PublicInputs};
 use hyle_contract::HyleOutput;
-use stark_platinum_prover::proof::options::ProofOptions;
+use stark_platinum_prover::proof::options::{ProofOptions, SecurityLevel};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use cairo_platinum_prover::runner::run::generate_prover_args_from_trace;
@@ -19,7 +19,8 @@ pub struct Event {
     amount: u64,
 }
 
-pub fn verify_proof(proof_path: &String, proof_options: ProofOptions) -> Result<String, VerifierError>{
+pub fn verify_proof(proof_path: &String) -> Result<String, VerifierError>{
+    let proof_options = ProofOptions::new_secure(SecurityLevel::Conjecturable100Bits, 3);
     let Ok(program_content) = std::fs::read(proof_path) else {
         return Err(VerifierError(format!("Error opening {} file", proof_path)));
     };
@@ -69,11 +70,12 @@ pub fn verify_proof(proof_path: &String, proof_options: ProofOptions) -> Result<
 }
 
 #[wasm_bindgen]
-pub fn prove(trace_bin_path: &str, memory_bin_path: &str, output_path: &str, proof_path: &str, proof_options: &ProofOptions) -> Result<String, VerifierError> {
+pub fn prove(trace_bin_path: &str, memory_bin_path: &str, proof_path: &str, output_path: &str) -> Result<String, VerifierError> {
+    let proof_options = ProofOptions::new_secure(SecurityLevel::Conjecturable100Bits, 3);
     let Some((proof, pub_inputs)) = generate_proof_from_trace(
         trace_bin_path,
         memory_bin_path,
-        proof_options,
+        &proof_options,
     ) else {
         return Err(VerifierError("Error generation prover args".to_string()));
     };
