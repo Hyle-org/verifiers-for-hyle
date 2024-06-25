@@ -1,13 +1,9 @@
-use cairo_platinum_prover::air::{generate_cairo_proof, verify_cairo_proof, PublicInputs};
+use cairo_platinum_prover::{air::{generate_cairo_proof, verify_cairo_proof, PublicInputs}, cairo_mem::CairoMemory, execution_trace::build_main_trace, register_states::RegisterStates};
 use hyle_contract::HyleOutput;
 use stark_platinum_prover::proof::options::{ProofOptions, SecurityLevel};
 use serde::{Deserialize, Serialize};
-use std::fs;
-use cairo_platinum_prover::runner::run::generate_prover_args_from_trace;
 use lambdaworks_math::field::fields::fft_friendly::stark_252_prime_field::Stark252PrimeField;
 use stark_platinum_prover::proof::stark::StarkProof;
-use std::time::Instant;
-use wasm_bindgen::prelude::*;
 use error::VerifierError;
 
 pub mod error;
@@ -69,42 +65,41 @@ pub fn verify_proof(proof_path: &String) -> Result<String, VerifierError>{
     }
 }
 
-#[wasm_bindgen]
-pub fn prove(trace_bin_path: &str, memory_bin_path: &str, proof_path: &str, output_path: &str) -> Result<String, VerifierError> {
+
+pub fn prove(trace_data: Vec<u8>, memory_data: Vec<u8>, output: &str) -> Result<Vec<u8>, VerifierError> {
     let proof_options = ProofOptions::new_secure(SecurityLevel::Conjecturable100Bits, 3);
     let Some((proof, pub_inputs)) = generate_proof_from_trace(
-        trace_bin_path,
-        memory_bin_path,
+        &trace_data,
+        &memory_data,
         &proof_options,
     ) else {
         return Err(VerifierError("Error generation prover args".to_string()));
     };
-
-    write_proof(proof, pub_inputs, output_path, proof_path);
-    Ok("Trace and memory successfully proved".to_string())
+    let proof = write_proof(proof, pub_inputs, output);
+    Ok(proof)
 }
 
-fn generate_proof_from_trace(
-    trace_bin_path: &str,
-    memory_bin_path: &str,
+pub fn generate_proof_from_trace(
+    trace_data: &Vec<u8>,
+    memory_data: &Vec<u8>,
     proof_options: &ProofOptions,
 ) -> Option<(
     StarkProof<Stark252PrimeField, Stark252PrimeField>,
     PublicInputs,
 )> {
     // ## Generating the prover args
-    let timer = Instant::now();
-    let Ok((main_trace, pub_inputs)) =
-        generate_prover_args_from_trace(trace_bin_path, memory_bin_path)
-    else {
-        eprintln!("Eroutput_pathror generating prover args");
-        return None;
-    };
-    println!("  Time spent: {:?} \n", timer.elapsed());
+    let register_states = RegisterStates::from_bytes_le(trace_data).expect("Cairo trace data incorrect");
+    let memory = CairoMemory::from_bytes_le(memory_data).expect("Cairo memory data incorrect");
+
+    // data length
+    let data_len = 0_usize;
+    let mut pub_inputs = PublicInputs::from_regs_and_mem(&register_states, &memory, data_len);
+
+
+    let main_trace = build_main_trace(&register_states, &memory, &mut pub_inputs);
+
 
     // ## Prove
-    let timer = Instant::now();
-    println!("Making proof ...");
     let proof = match generate_cairo_proof(&main_trace, &pub_inputs, proof_options) {
         Ok(p) => p,
         Err(err) => {
@@ -112,7 +107,6 @@ fn generate_proof_from_trace(
             return None;
         }
     };
-    println!("  Time spent in proving: {:?} \n", timer.elapsed());
 
     Some((proof, pub_inputs))
 }
@@ -120,9 +114,8 @@ fn generate_proof_from_trace(
 fn write_proof(
     proof: StarkProof<Stark252PrimeField, Stark252PrimeField>,
     pub_inputs: PublicInputs,
-    output_path: &str,
-    proof_path: &str,
-) {
+    output: &str,
+) -> Vec<u8> {
     let mut bytes = vec![];
     let proof_bytes: Vec<u8> =
         bincode::serde::encode_to_vec(proof, bincode::config::standard()).unwrap();
@@ -144,19 +137,10 @@ fn write_proof(
 
     ///// HYLE CUSTOM /////
     // Basically adding the program output to the proof
-    let program_output_str: String = fs::read_to_string(&output_path).expect("Failed to read output file");
-    let program_output: HyleOutput::<Event> = serde_json::from_str(&program_output_str).expect("JSON output was not well-formatted");
+    let program_output: HyleOutput::<Event> = serde_json::from_str(&output).expect("JSON output was not well-formatted");
     let program_output_bytes: Vec<u8> =
         bincode::serde::encode_to_vec(&program_output, bincode::config::standard()).unwrap();
-    
     bytes.extend(program_output_bytes);
     ///////////////////////
-
-    let Ok(()) = std::fs::write(&proof_path, bytes) else {
-        eprintln!("Error writing proof to file: {}", &proof_path);
-        return;
-    };
-
-
-    println!("Proof written to {}", proof_path);
+    bytes
 }

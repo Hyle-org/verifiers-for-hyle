@@ -1,3 +1,5 @@
+use std::fs;
+
 use clap::Parser;
 use crate::utils::error::VerifierError;
 
@@ -17,12 +19,17 @@ fn main() -> Result<(), VerifierError> {
             utils::verify_proof(&args.proof_path)
         },
         commands::ProverEntity::Prove(args) => {
-            utils::prove(
-                &args.trace_bin_path,
-                &args.memory_bin_path,
-                &args.output_path,
-                &args.proof_path,
-            )
+            let program_output_str: String = fs::read_to_string(&args.output_path).expect("Failed to read output file");
+
+            let trace_data = fs::read(&args.trace_bin_path).expect("failed to load trace file");
+            let memory_data = fs::read(&args.memory_bin_path).expect("failed to load memory file");
+            let proof = utils::prove(
+                trace_data,
+                memory_data,
+                &program_output_str
+            )?;
+            std::fs::write(&args.proof_path, proof)?;
+            Ok(format!("Proof written to {}", &args.proof_path))
         }
     };
     match res {
