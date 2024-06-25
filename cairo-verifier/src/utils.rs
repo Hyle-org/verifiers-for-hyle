@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 use lambdaworks_math::field::fields::fft_friendly::stark_252_prime_field::Stark252PrimeField;
 use stark_platinum_prover::proof::stark::StarkProof;
 use error::VerifierError;
+use num::BigInt;
 
 pub mod error;
 
@@ -137,10 +138,86 @@ fn write_proof(
 
     ///// HYLE CUSTOM /////
     // Basically adding the program output to the proof
-    let program_output: HyleOutput::<Event> = serde_json::from_str(&output).expect("JSON output was not well-formatted");
+    let program_output = <HyleOutput<Event> as DeserializableHyleOutput>::deserialize(&output);
     let program_output_bytes: Vec<u8> =
         bincode::serde::encode_to_vec(&program_output, bincode::config::standard()).unwrap();
     bytes.extend(program_output_bytes);
     ///////////////////////
     bytes
+}
+
+
+
+pub trait DeserializableHyleOutput {
+    fn i_to_w(s: String) -> String;
+    fn deserialize_cairo_bytesarray(data: &mut Vec<&str>) -> String;
+    fn deserialize(input: &str) -> Self;
+}
+
+
+impl DeserializableHyleOutput for HyleOutput<Event> {
+    /// Receives an int, change base to hex, decode it to ascii
+    fn i_to_w(s: String) -> String {
+        let int = s.parse::<BigInt>().expect("failed to parse the address");
+        let hex = hex::decode(format!("{:x}", int)).expect("failed to parse the address");
+        String::from_utf8(hex).expect("failed to parse the address")
+    }
+
+    /// BytesArray serialisation is composed of 3 values (if the data is less than 31bytes)
+    /// https://github.com/starkware-libs/cairo/blob/main/corelib/src/byte_array.cairo#L24-L34
+    /// WARNING: Deserialization is not yet robust.
+    /// TODO: pending_word_len not used.
+    /// TODO: add checking on inputs.
+    fn deserialize_cairo_bytesarray(data: &mut Vec<&str>) -> String {
+        let pending_word = data.remove(0).parse::<usize>().unwrap();
+        let _pending_word_len = data.remove(pending_word + 1).parse::<usize>().unwrap();
+        let mut word: String = "".into();
+        for _ in 0..pending_word+1 {
+            let d: String = data.remove(0).into();
+            if d != "0"{
+                word.push_str(&Self::i_to_w(d));
+            }
+        }
+        word
+    }
+
+    /// Deserialize the output of the cairo erc20 contract.
+    /// elements for the "from" address
+    /// elements for the "to" address
+    /// [-2] element for the amount transfered
+    /// [-1] element for the next state
+    fn deserialize(input: &str) -> Self {
+        let trimmed = input.trim_matches(|c| c == '[' || c == ']');
+        let mut parts: Vec<&str> = trimmed.split_whitespace().collect();
+        // extract version
+        let version = parts.remove(0).parse::<u32>().unwrap();
+        // extract initial_state
+        let initial_state: String = parts.remove(0).parse::<String>().unwrap();
+        // extract next_state
+        let next_state: String = parts.remove(0).parse::<String>().unwrap();
+        // extract origin
+        let origin: String = Self::deserialize_cairo_bytesarray(&mut parts);
+        // extract caller
+        let caller: String = Self::deserialize_cairo_bytesarray(&mut parts);
+        // extract tx_hash
+        let tx_hash: String = parts.remove(0).parse::<String>().unwrap();
+        // extract from
+        let from = Self::deserialize_cairo_bytesarray(&mut parts);
+        // extract to
+        let to = Self::deserialize_cairo_bytesarray(&mut parts);
+        // extract amount
+        let amount = parts.remove(0).parse::<u64>().unwrap();
+
+        HyleOutput {
+            version,
+            initial_state: initial_state.as_bytes().to_vec(),
+            next_state: next_state.as_bytes().to_vec(),
+            origin,
+            caller,
+            block_number: 0,
+            block_time: 0,
+            tx_hash: tx_hash.as_bytes().to_vec(),
+            program_outputs: Event {from, to, amount}
+        }
+    }
 }
