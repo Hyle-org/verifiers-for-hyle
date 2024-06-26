@@ -196,10 +196,6 @@ impl DeserializableHyleOutput for HyleOutput<Event> {
         let initial_state: String = parts.remove(0).parse::<String>().unwrap();
         // extract next_state
         let next_state: String = parts.remove(0).parse::<String>().unwrap();
-        // extract origin
-        let origin: String = Self::deserialize_cairo_bytesarray(&mut parts);
-        // extract caller
-        let caller: String = Self::deserialize_cairo_bytesarray(&mut parts);
         // extract tx_hash
         let tx_hash: String = parts.remove(0).parse::<String>().unwrap();
 
