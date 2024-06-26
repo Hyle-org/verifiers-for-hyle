@@ -17,7 +17,6 @@ macro_rules! log {
 pub fn wasm_prove(trace_data: Vec<u8>, memory_data: Vec<u8>, output: &str) -> Result<JsValue, VerifierError> {
     // Sets up panic for easy debugging
     std::panic::set_hook(Box::new(console_error_panic_hook::hook));
-    log!("ok");
 
     let proof = prove(trace_data, memory_data, output)?;
     Ok(serde_wasm_bindgen::to_value(&proof).unwrap())

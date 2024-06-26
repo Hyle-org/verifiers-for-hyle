@@ -4,6 +4,6 @@ members = [
     "hyle-contract",
     "midenvm-verifier",
     "risc0-verifier",
-    "sp1-verifier",
+    # "sp1-verifier",
     "cairo-verifier"
 ]
