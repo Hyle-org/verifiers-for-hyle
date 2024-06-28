@@ -9,11 +9,12 @@ use num::BigInt;
 
 pub mod error;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Event {
-    from: String,
-    to: String,
-    amount: u64,
+    from: Option<String>,
+    to: Option<String>,
+    amount: Option<u64>,
+    score: Option<u64>
 }
 
 pub fn verify_proof(proof_path: &String) -> Result<String, VerifierError>{
@@ -201,23 +202,55 @@ impl DeserializableHyleOutput for HyleOutput<Event> {
         let caller: String = Self::deserialize_cairo_bytesarray(&mut parts);
         // extract tx_hash
         let tx_hash: String = parts.remove(0).parse::<String>().unwrap();
-        // extract from
-        let from = Self::deserialize_cairo_bytesarray(&mut parts);
-        // extract to
-        let to = Self::deserialize_cairo_bytesarray(&mut parts);
-        // extract amount
-        let amount = parts.remove(0).parse::<u64>().unwrap();
 
-        HyleOutput {
-            version,
-            initial_state: initial_state.as_bytes().to_vec(),
-            next_state: next_state.as_bytes().to_vec(),
-            origin,
-            caller,
-            block_number: 0,
-            block_time: 0,
-            tx_hash: tx_hash.as_bytes().to_vec(),
-            program_outputs: Event {from, to, amount}
-        }
+        let output = match parts.len() {
+            1 => {
+                let score = parts.remove(0).parse::<u64>().unwrap();
+                let program_outputs = Event {
+                    score: Some(score),
+                    ..Default::default()
+                };
+                HyleOutput {
+                    version,
+                    initial_state: initial_state.as_bytes().to_vec(),
+                    next_state: next_state.as_bytes().to_vec(),
+                    origin,
+                    caller,
+                    block_number: 0,
+                    block_time: 0,
+                    tx_hash: tx_hash.as_bytes().to_vec(),
+                    program_outputs
+                }
+            },
+            3 => {
+                // extract from
+                let from = Self::deserialize_cairo_bytesarray(&mut parts);
+                // extract to
+                let to = Self::deserialize_cairo_bytesarray(&mut parts);
+                // extract amount
+                let amount = parts.remove(0).parse::<u64>().unwrap();
+
+                let program_outputs = Event {
+                    from: Some(from),
+                    to: Some(to),
+                    amount: Some(amount),
+                     ..Default::default()
+                };
+                HyleOutput {
+                    version,
+                    initial_state: initial_state.as_bytes().to_vec(),
+                    next_state: next_state.as_bytes().to_vec(),
+                    origin,
+                    caller,
+                    block_number: 0,
+                    block_time: 0,
+                    tx_hash: tx_hash.as_bytes().to_vec(),
+                    program_outputs
+                }
+            }
+            _ => panic!("You're not parsing ERC20 or ML. Sorry bro not possible atm"),
+        };
+
+        output
     }
 }
