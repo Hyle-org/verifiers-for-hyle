@@ -222,7 +222,7 @@ impl DeserializableHyleOutput for HyleOutput<Event> {
                     program_outputs
                 }
             },
-            3 => {
+            7 => {
                 // extract from
                 let from = Self::deserialize_cairo_bytesarray(&mut parts);
                 // extract to
@@ -248,7 +248,7 @@ impl DeserializableHyleOutput for HyleOutput<Event> {
                     program_outputs
                 }
             }
-            _ => panic!("You're not parsing ERC20 or ML. Sorry bro not possible atm"),
+            _ => panic!("You're not parsing ERC20 or ML. Sorry bro not possible atm. Or your name is too long :eyes:"),
         };
 
         output
