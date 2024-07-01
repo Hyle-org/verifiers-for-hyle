@@ -3,7 +3,7 @@
 extern crate alloc;
 
 use serde::{Deserialize, Serialize};
-use alloc::vec::Vec;
+use alloc::{vec::Vec, string::String};
 
 // This is intended as the "typical" input a Hyle smart contract would receive.
 // Note that there is actually no requirement to match this structure.
@@ -11,6 +11,7 @@ use alloc::vec::Vec;
 pub struct HyleInput<T> {
     pub initial_state: Vec<u8>,
     pub tx_hash: Vec<u8>,
+    pub identity: String,
     pub program_inputs: T
 }
 
@@ -22,6 +23,7 @@ pub struct HyleOutput<T> {
     pub version: u32,
     pub initial_state: Vec<u8>,
     pub next_state: Vec<u8>,
+    pub identity: String,
     pub tx_hash: Vec<u8>,
     pub program_outputs: T
 }

@@ -196,6 +196,8 @@ impl DeserializableHyleOutput for HyleOutput<Event> {
         let initial_state: String = parts.remove(0).parse::<String>().unwrap();
         // extract next_state
         let next_state: String = parts.remove(0).parse::<String>().unwrap();
+        // extract identity
+        let identity: String = parts.remove(0).parse::<String>().unwrap();
         // extract tx_hash
         let tx_hash: String = parts.remove(0).parse::<String>().unwrap();
 
@@ -210,10 +212,7 @@ impl DeserializableHyleOutput for HyleOutput<Event> {
                     version,
                     initial_state: initial_state.as_bytes().to_vec(),
                     next_state: next_state.as_bytes().to_vec(),
-                    origin,
-                    caller,
-                    block_number: 0,
-                    block_time: 0,
+                    identity,
                     tx_hash: tx_hash.as_bytes().to_vec(),
                     program_outputs
                 }
@@ -236,10 +235,7 @@ impl DeserializableHyleOutput for HyleOutput<Event> {
                     version,
                     initial_state: initial_state.as_bytes().to_vec(),
                     next_state: next_state.as_bytes().to_vec(),
-                    origin,
-                    caller,
-                    block_number: 0,
-                    block_time: 0,
+                    identity,
                     tx_hash: tx_hash.as_bytes().to_vec(),
                     program_outputs
                 }
