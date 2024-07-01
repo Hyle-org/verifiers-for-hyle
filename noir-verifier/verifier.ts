@@ -21,10 +21,7 @@ interface HyleOutput {
   version: number;
   initial_state: number[];
   next_state: number[];
-  origin: string;
-  caller: string;
-  block_number: BigInt;
-  block_time: BigInt;
+  identity: string;
   tx_hash: number[];
 }
 
@@ -51,10 +48,7 @@ function deserializePublicInputs<T>(publicInputs: string[]): HyleOutput {
 
   const initial_state = parseArray(publicInputs);
   const next_state = parseArray(publicInputs);
-  const origin = parseString(publicInputs);
-  const caller = parseString(publicInputs);
-  const block_number = BigInt(publicInputs.shift() as string);
-  const block_time = BigInt(publicInputs.shift() as string);
+  const identity = parseString(publicInputs);
   const tx_hash = parseArray(publicInputs);
   // We don't parse the rest, which correspond to programOutputs
 
@@ -62,17 +56,14 @@ function deserializePublicInputs<T>(publicInputs: string[]): HyleOutput {
       version,
       initial_state,
       next_state,
-      origin,
-      caller,
-      block_number,
-      block_time,
+      identity,
       tx_hash
   };
 }
 
 const proof = JSON.parse(fs.readFileSync(values.proofPath, { encoding: 'utf8' }));
-const b64vKey = fs.readFileSync(values.vKeyPath, { encoding: 'utf8' });
-const vKey = Uint8Array.from(Buffer.from(b64vKey, 'base64'));
+const file = Bun.file(values.vKeyPath);
+const vKey = await file.bytes();
 
 const deserializedProofData: ProofData = {
   proof: Uint8Array.from(proof.proof),

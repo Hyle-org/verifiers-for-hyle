@@ -506,7 +506,7 @@ dependencies = [
  "clap",
  "console_error_panic_hook",
  "hex",
- "hyle_contract 0.1.0 (git+https://github.com/hyle-org/verifiers-for-hyle.git?branch=main)",
+ "hyle_contract",
  "lambdaworks-math",
  "num",
  "serde",
@@ -990,14 +990,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "hyle_contract"
-version = "0.1.0"
-source = "git+https://github.com/hyle-org/verifiers-for-hyle.git?branch=main#81ca5bff0271ed732144293579c42d41f1958d2a"
-dependencies = [
- "serde",
-]
-
-[[package]]
 name = "hyper"
 version = "0.14.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1305,7 +1297,7 @@ name = "midenvm-verifier"
 version = "0.1.0"
 dependencies = [
  "hex",
- "hyle_contract 0.1.0",
+ "hyle_contract",
  "miden-assembly",
  "miden-stdlib",
  "miden-verifier",
@@ -1853,7 +1845,7 @@ name = "risc0-verifier"
 version = "0.1.0"
 dependencies = [
  "base64 0.22.1",
- "hyle_contract 0.1.0",
+ "hyle_contract",
  "risc0-zkvm",
  "serde",
  "serde_json",
